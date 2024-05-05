@@ -21,8 +21,8 @@ class _ReviewPageState extends State<ReviewPage> {
     double personActivation = PersonActivationPoint.personActivationPoint;
     double personRelax = PersonRelaxPoint.personRelaxPoint;
     double mid = data.chartMidPoint[0].mid;
-    double relax = data.chartRelaxPoint[0].relax;
-    double activation = data.chartActivationPoint[0].activation;
+    double relax = data.chartRelaxPoint[0].relax < mid ? data.chartRelaxPoint[0].relax : 0;
+    double activation = data.chartActivationPoint[0].activation > data.chartRelaxPoint[0].relax ?  data.chartActivationPoint[0].activation : 0;
     double relaxAccuracy = (differ.relax - personRelax).isNegative
         ? -(differ.relax - personRelax)
         : (differ.relax - personRelax);

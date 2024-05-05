@@ -50,8 +50,20 @@ class _FinalChartPageState extends State<FinalChartPage> {
           : ((data.chartMidPoint[0].mid / data.chartMidPoint[0].mid - 1))
               .toDouble();
   late GlobalKey<SfCartesianChartState> _cartesianChartKey;
+  double concentration = 1.0;
+  double calculateMeanDerivative(List<LiveData> data) {
+    double meanDerivative = 0.0;
+    for (int i = 1; i < data.length - 1; i++) {
+      final int dx = data[i + 1].time - data[i].time;
+      final double dy = data[i + 1].mkSim - data[i].mkSim;
+      meanDerivative += (dy / dx) / (i+1);
+    }
+    return meanDerivative;
+  }
   @override
   void initState() {
+    print(calculateMeanDerivative(data.chartData));
+    concentration -= calculateMeanDerivative(data.chartData);
     _cartesianChartKey = GlobalKey();
     super.initState();
   }
@@ -329,6 +341,54 @@ class _FinalChartPageState extends State<FinalChartPage> {
                                 width: 10,
                               ),
                               const Text('Баллов',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 104, 163, 193),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14)),
+                              const SizedBox(
+                                width: 0,
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          const Row(
+                            children: [
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Text(
+                                  'КОНЦЕНТРАЦИЯ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 45,
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                height: 40,
+                                width: 90,
+                                child: Container(
+                                  color:
+                                  const Color.fromARGB(255, 104, 163, 193),
+                                  child: Center(
+                                      child: Text(
+                                        '${(concentration * 100)}',
+                                        style: const TextStyle(color: Colors.white),
+                                      )),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const Text('%',
                                   style: TextStyle(
                                       color: Color.fromARGB(255, 104, 163, 193),
                                       fontWeight: FontWeight.w700,

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:kgr_1/status_page.dart';
 import 'text_sources.dart';
 
@@ -12,9 +13,20 @@ class ManualPage extends StatefulWidget {
   State<ManualPage> createState() => _ManualPageState();
 }
 
+List<String> availablePorts = ["COM1", "COM1", "COM1"];
+String selectedComPort = "";
+
 class _ManualPageState extends State<ManualPage> {
   @override
+  void initState() {
+    availablePorts = SerialPort.availablePorts;
+    print(availablePorts);
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
+    String selectedComPort = availablePorts.first;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 238, 247, 254),
       appBar: AppBar(
@@ -122,6 +134,11 @@ class _ManualPageState extends State<ManualPage> {
                   SizedBox(
                     height: 40,
                     width: 120,
+                    child: DropdownMenuExample()
+                  ),
+                  SizedBox(
+                    height: 40,
+                    width: 120,
                     child: ElevatedButton(
                         style: ButtonStyle(
                             shape: MaterialStateProperty.all(
@@ -143,6 +160,33 @@ class _ManualPageState extends State<ManualPage> {
           ]),
         ),
       ),
+    );
+  }
+}
+class DropdownMenuExample extends StatefulWidget {
+  const DropdownMenuExample({super.key});
+
+  @override
+  State<DropdownMenuExample> createState() => _DropdownMenuExampleState();
+}
+
+class _DropdownMenuExampleState extends State<DropdownMenuExample> {
+  String dropdownValue = availablePorts.first;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownMenu<String>(
+      initialSelection: availablePorts.first,
+      onSelected: (String? value) {
+        selectedComPort = value!;
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+        });
+      },
+      dropdownMenuEntries: availablePorts.map<DropdownMenuEntry<String>>((String value) {
+        return DropdownMenuEntry<String>(value: value, label: value);
+      }).toList(),
     );
   }
 }

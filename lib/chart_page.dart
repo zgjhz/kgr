@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:kgr_1/status_page.dart';
+import 'manual_page.dart';
 import 'package:libserialport/libserialport.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -53,7 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _localFile() async {
     final directory = await getDownloadsDirectory();
-    print("pizda ${directory?.path}");
     path = directory?.path;
     var chartFile = File('$path/my-list.csv');
     sink = chartFile.openWrite();
@@ -73,48 +73,48 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // List<String> avaiblePorts = SerialPort.availablePorts;
-    // print("AvailablePorts: $avaiblePorts");
-    // SerialPort port1 = SerialPort("COM5");
-    // final configu = SerialPortConfig();
-    // configu.baudRate = 9600;
-    // configu.bits = 8;
-    // configu.parity = 0;
-    // port1.config = configu;
-    // SerialPortReader reader = SerialPortReader(port1, timeout: 10);
-    // try {
-    //   port1.openRead();
-    // } on SerialPortError {
-    //   //if (port1.isOpen) {
-    //   port1.close();
-    //   print('serial port error');
-    //   //}
-    // }
+    List<String> avaiblePorts = SerialPort.availablePorts;
+    print("AvailablePorts: $avaiblePorts");
+    SerialPort port1 = SerialPort(selectedComPort);
+    final configu = SerialPortConfig();
+    configu.baudRate = 9600;
+    configu.bits = 8;
+    configu.parity = 0;
+    port1.config = configu;
+    SerialPortReader reader = SerialPortReader(port1, timeout: 10);
+    try {
+      port1.openRead();
+    } on SerialPortError {
+      //if (port1.isOpen) {
+      port1.close();
+      print('serial port error');
+      //}
+    }
     String cash = '';
     StreamController<double> testData = StreamController<double>();
-    // try {
-    //   String mergedData = "";
-    //   Stream<double> upcommingData = reader.stream.map((data) {
-    //     cash = '$cash${String.fromCharCodes(data)}';
-    //     if (cash.endsWith('\n')) {
-    //       mergedData = cash;
-    //       print('*${mergedData.substring(1, mergedData.length - 2)}*\n');
-    //       cash = '';
-    //       double k = 0;
-    //       try {
-    //         k = int.parse(mergedData.substring(1, mergedData.length - 3))
-    //             .toDouble();
-    //       } on FormatException {
-    //         return -1;
-    //       }
-    //       return 1 / k * 10000;
-    //     } else {
-    //       return -1;
-    //     }
-    //   });
+    try {
+      String mergedData = "";
+      Stream<double> upcommingData = reader.stream.map((data) {
+        cash = '$cash${String.fromCharCodes(data)}';
+        if (cash.endsWith('\n')) {
+          mergedData = cash;
+          print('*${mergedData.substring(1, mergedData.length - 2)}*\n');
+          cash = '';
+          double k = 0;
+          try {
+            k = int.parse(mergedData.substring(1, mergedData.length - 3))
+                .toDouble();
+          } on FormatException {
+            return -1;
+          }
+          return 1 / k * 10000;
+        } else {
+          return -1;
+        }
+      });
 
-    /*upcommingData*/ testData.stream.listen((data) {
-      if (/*data != -1*/ data >= 0) {
+    /*testData.stream.*/upcommingData.listen((data) {
+      if (data != -1 && data >= 0) {
         sink.writeln("$timeCounter;$data");
         sum += data;
         counter++;
@@ -143,9 +143,9 @@ class _MyHomePageState extends State<MyHomePage> {
         index++;
       }
     });
-    // } on SerialPortError catch (err, _) {
-    //   print(err);
-    // }
+    } on SerialPortError catch (err, _) {
+      print(err);
+    }
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 238, 247, 254),
         appBar: AppBar(
@@ -506,11 +506,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           double value = 1;
                           double fvc = 1;
+                          double testValue = 5.0;
                           timer = Timer.periodic(
                               const Duration(milliseconds: 200), (timer) {
                             timeCounter++;
-                            var random = Random().nextDouble() * 10;
-                            testData.sink.add(random);
+                            double doubleInRange(Random source, num start, num end) =>
+                                source.nextDouble() * (end - start) + start;
+                            testValue += doubleInRange(Random(), -1, 1);
+                            testData.sink.add(testValue);
                             //print(random);
                             _chartData.add(LiveData(timeCounter, 0, secMid, 0,
                                 0, 0, 0, 0, 0, 0, 0, 0, 0));
