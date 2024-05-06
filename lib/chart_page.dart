@@ -122,9 +122,9 @@ class _MyHomePageState extends State<MyHomePage> {
           mid.value = sum / counter;
         }
         if (relaxationFlag == true) {
-          relax.value = ((1 - data / sum * counter) * 100).isNegative
+          relax.value = ((1 - data / mid.value) * 100).isNegative
               ? 0
-              : (1 - data / sum * counter) * 100;
+              : (1 - data / mid.value) * 100;
           secRelax = data;
         }
         if (activationFlag == true) {
@@ -404,7 +404,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 _chartSeriesController1 = controller;
                               },
                               dataSource: _chartData1,
-                              color: const Color(0xff1b87ae),
+                              color: const Color(0xff004764),
                               xValueMapper: (LiveData sales, _) => sales.time,
                               yValueMapper: (LiveData sales, _) =>
                                   sales.mkSimOld,
@@ -521,11 +521,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               addedDataIndex: _chartData.length - 1,
                             );
                             if (timeCounter <= 300) {
-                              fvc = 10000 / secMidOldNew[1] +
-                                  0.875 * fvc -
-                                  10000 / secMidOldNew[0];
-                              value = value * (1 - 0.1) + fvc * 0.1;
+                              fvc = (10000 / secMidOldNew[1]) +
+                                  (0.875 * fvc) -
+                                  (10000 / secMidOldNew[0] * 1);
+                              value = value * (1 - 0.15) + fvc * 0.1;
                               value = value.isNegative ? 0 : value;
+                              print(value);
                               _chartData1.add(LiveData(timeCounter, value, 0, 0,
                                   0, 0, 0, 0, 0, 0, 0, 0, 0));
                               _chartSeriesController1.updateDataSource(
@@ -585,15 +586,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             const Color.fromARGB(255, 195, 217, 230))),
                     onPressed: () {
                       data = TransferData(
-                          mid.value.round(),
+                          mid.value,
                           _chartData,
                           _chartData1,
                           _chartMidPoint,
                           _chartRelaxPoint,
                           _chartActivationPoint);
                       //ToDo: Защита от дурака(late Timer timer), чтобы не нажимали далее, пока не нажмут старт
-                      //reader.close();
-                      //port1.close();
+                      reader.close();
+                      port1.close();
                       timer.cancel();
                       Navigator.of(context).pushNamed('/statusPage',
                           arguments: ScreenArguments('САМООЦЕНКА РЕЛАКСАЦИИ'));
@@ -652,7 +653,7 @@ class TransferData {
   TransferData(this.mid, this.chartData, this.chartData1, this.chartMidPoint,
       this.chartRelaxPoint, this.chartActivationPoint);
 
-  final int mid;
+  final double mid;
   final List<LiveData> chartData;
   final List<LiveData> chartData1;
   final List<LiveData> chartMidPoint;

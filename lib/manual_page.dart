@@ -13,13 +13,13 @@ class ManualPage extends StatefulWidget {
   State<ManualPage> createState() => _ManualPageState();
 }
 
-List<String> availablePorts = ["COM1", "COM1", "COM1"];
+List<String> availablePorts = ["COM1"];
 String selectedComPort = "";
 
 class _ManualPageState extends State<ManualPage> {
   @override
   void initState() {
-    availablePorts = SerialPort.availablePorts;
+    availablePorts = SerialPort.availablePorts.isEmpty ? ["COM1"] : SerialPort.availablePorts;
     print(availablePorts);
     // TODO: implement initState
     super.initState();

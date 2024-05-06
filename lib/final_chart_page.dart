@@ -18,52 +18,50 @@ class FinalChartPage extends StatefulWidget {
   State<FinalChartPage> createState() => _FinalChartPageState();
 }
 
+var relax = 0;
+var activation = 0;
+var newMid = 0;
+
 class _FinalChartPageState extends State<FinalChartPage> {
-  List<LiveData> personMidPoint = [
-    LiveData(
-        0, 0, 0, 0, 0, 300, PersonMidPoint.personMidPoint, 0, 0, 0, 0, 0, 0)
-  ];
-  List<LiveData> personRelaxPoint = [
-    LiveData(
-        0, 0, 0, 0, 0, 0, 0, 600, PersonRelaxPoint.personRelaxPoint, 0, 0, 0, 0)
-  ];
-  List<LiveData> personActivationPoint = [
-    LiveData(0, 0, 0, 0, 0, 0, 0, 0, 0, 900,
-        PersonActivationPoint.personActivationPoint, 0, 0)
-  ];
-  int relax = (1 - data.chartRelaxPoint[0].relax / data.mid).isNegative
-      ? 0
-      : ((1 - data.chartRelaxPoint[0].relax / data.mid) * 100).round();
-  int activation =
-      (data.chartActivationPoint[0].activation / data.chartRelaxPoint[0].relax -
-                  1)
-              .isNegative
-          ? 0
-          : ((data.chartActivationPoint[0].activation /
-                          data.chartRelaxPoint[0].relax -
-                      1) *
-                  100)
-              .round();
-  double mid =
-      (data.chartMidPoint[0].mid / data.chartMidPoint[0].mid - 1).isNegative
-          ? 0
-          : ((data.chartMidPoint[0].mid / data.chartMidPoint[0].mid - 1))
-              .toDouble();
+  List<LiveData> personMidPoint = [];
+
+  List<LiveData> personRelaxPoint = [];
+  List<LiveData> personActivationPoint = [];
+  double personMid = PersonMidPoint.personMidPoint;
+  double personRelax = PersonRelaxPoint.personRelaxPoint;
+  double personActivation = PersonActivationPoint.personActivationPoint;
+
+  double mid = data.mid;
   late GlobalKey<SfCartesianChartState> _cartesianChartKey;
   double concentration = 1.0;
+
   double calculateMeanDerivative(List<LiveData> data) {
     double meanDerivative = 0.0;
     for (int i = 1; i < data.length - 1; i++) {
       final int dx = data[i + 1].time - data[i].time;
-      final double dy = data[i + 1].mkSim - data[i].mkSim;
-      meanDerivative += (dy / dx) / (i+1);
+      final double dy = (data[i + 1].mkSim - data[i].mkSim).abs();
+      meanDerivative += (dy / dx) / (i + 1);
     }
     return meanDerivative;
   }
+
   @override
   void initState() {
+    relax = (1 - data.chartRelaxPoint[0].relax / data.mid).isNegative
+        ? 0
+        : ((1 - data.chartRelaxPoint[0].relax / data.mid) * 100).round();
+    activation = (data.chartActivationPoint[0].activation /
+                    data.chartRelaxPoint[0].relax -
+                1)
+            .isNegative
+        ? 0
+        : ((data.chartActivationPoint[0].activation /
+                        data.chartRelaxPoint[0].relax -
+                    1) *
+                100)
+            .round();
     print(calculateMeanDerivative(data.chartData));
-    concentration -= calculateMeanDerivative(data.chartData);
+    concentration -= calculateMeanDerivative(data.chartData) * 1.1;
     _cartesianChartKey = GlobalKey();
     super.initState();
   }
@@ -83,6 +81,84 @@ class _FinalChartPageState extends State<FinalChartPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (personMid == 1) {
+      personMid = 0.84;
+    } else if (personMid == 2) {
+      personMid = 1.68;
+    } else if (personMid == 3) {
+      personMid = 2.50;
+    } else if (personMid == 4) {
+      personMid = 2.60;
+    } else if (personMid == 5) {
+      personMid = 3.2;
+    } else if (personMid == 6) {
+      personMid = 3.8;
+    } else if (personMid == 7) {
+      personMid = 4.90;
+    } else if (personMid == 8) {
+      personMid = 5;
+    } else if (personMid == 9) {
+      personMid = 5.3;
+    } else if (personMid == 10) {
+      personMid = 5.5;
+    }
+
+    if (personRelax == 0) {
+      personRelax == 0;
+    }
+    if (personRelax == 1) {
+      personRelax = (1 - 0.06) * mid;
+    } else if (personRelax == 2) {
+      personRelax = (1 - 0.12) * mid;
+    } else if (personRelax == 3) {
+      personRelax = (1 - 0.19) * mid;
+    } else if (personRelax == 4) {
+      personRelax = (1 - 0.2625) * mid;
+    } else if (personRelax == 5) {
+      personRelax = (1 - 0.335) * mid;
+    } else if (personRelax == 6) {
+      personRelax = (1 - 0.4075) * mid;
+    } else if (personRelax == 7) {
+      personRelax = (1 - 0.49) * mid;
+    } else if (personRelax == 8) {
+      personRelax = (1 - 0.5) * mid;
+    } else if (personRelax == 9) {
+      personRelax = (1 - 0.57) * mid;
+    } else if (personRelax == 10) {
+      personRelax = (1 - 0.64) * mid;
+    }
+    double _relax = data.chartRelaxPoint[0].relax;
+    if (personActivation == 1) {
+      personActivation = 1.06 * _relax;
+    } else if (personActivation == 2) {
+      personActivation = 1.12 * _relax;
+    } else if (personActivation == 3) {
+      personActivation = 1.20 * _relax;
+    } else if (personActivation == 4) {
+      personActivation = 1.24 * _relax;
+    } else if (personActivation == 5) {
+      personActivation = 1.28 * _relax;
+    } else if (personActivation == 6) {
+      personActivation = 1.32 * _relax;
+    } else if (personActivation == 7) {
+      personActivation = 1.36 * _relax;
+    } else if (personActivation == 8) {
+      personActivation = 1.37 * _relax;
+    } else if (personActivation == 9) {
+      personActivation = 1.42 * _relax;
+    } else if (personActivation == 10) {
+      personActivation = 1.50 * _relax;
+    }
+    personRelaxPoint = [
+      LiveData(0, 0, 0, 0, 0, 0, 0, 600, personRelax, 0, 0, 0, 0)
+    ];
+    personActivationPoint = [
+      LiveData(0, 0, 0, 0, 0, 0, 0, 0, 0, 900, personActivation, 0, 0)
+    ];
+    List<LiveData> personMidPoint = [
+      LiveData(0, 0, 0, 0, 0, 300, personMid, 0, 0, 0, 0, 0, 0)
+    ];
+
     if (relax == 0) {
       relax = 0;
     } else if (relax >= 1 && relax <= 10) {
@@ -125,7 +201,6 @@ class _FinalChartPageState extends State<FinalChartPage> {
     } else if (activation >= 58) {
       activation = 10;
     }
-    int newMid = 0;
     if (mid >= 0.0 && mid <= 1.0) {
       newMid = 1;
     } else if (mid > 1.0 && mid <= 1.8) {
@@ -377,12 +452,12 @@ class _FinalChartPageState extends State<FinalChartPage> {
                                 width: 90,
                                 child: Container(
                                   color:
-                                  const Color.fromARGB(255, 104, 163, 193),
+                                      const Color.fromARGB(255, 104, 163, 193),
                                   child: Center(
                                       child: Text(
-                                        '${(concentration * 100)}',
-                                        style: const TextStyle(color: Colors.white),
-                                      )),
+                                    '${(concentration * 100).toInt()}',
+                                    style: const TextStyle(color: Colors.white),
+                                  )),
                                 ),
                               ),
                               const SizedBox(
@@ -591,6 +666,7 @@ class PersonActivationPoint {
 
 class Differ {
   Differ(this.relax, this.activation, this.mid);
+
   int relax = 0;
   int activation = 0;
   int mid = 0;

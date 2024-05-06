@@ -17,23 +17,23 @@ class _ReviewPageState extends State<ReviewPage> {
   late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
-    double personMid = PersonMidPoint.personMidPoint;
-    double personActivation = PersonActivationPoint.personActivationPoint;
-    double personRelax = PersonRelaxPoint.personRelaxPoint;
-    double mid = data.chartMidPoint[0].mid;
-    double relax = data.chartRelaxPoint[0].relax < mid ? data.chartRelaxPoint[0].relax : 0;
-    double activation = data.chartActivationPoint[0].activation > data.chartRelaxPoint[0].relax ?  data.chartActivationPoint[0].activation : 0;
-    double relaxAccuracy = (differ.relax - personRelax).isNegative
-        ? -(differ.relax - personRelax)
-        : (differ.relax - personRelax);
-    double activationAccuracy =
-        (differ.activation - personActivation).isNegative
-            ? -(differ.activation - personActivation)
-            : (differ.activation - personActivation);
+    int personMid = PersonMidPoint.personMidPoint.round();
+    int personActivation = PersonActivationPoint.personActivationPoint.round();
+    int personRelax = PersonRelaxPoint.personRelaxPoint.round();
+    int mid = newMid;
+    int _relax = relax;
+    int _activation = activation;
+    // double relaxAccuracy = (differ.relax - personRelax).isNegative
+    //     ? -(differ.relax - personRelax)
+    //     : (differ.relax - personRelax);
+    // double activationAccuracy =
+    //     (differ.activation - personActivation).isNegative
+    //         ? -(differ.activation - personActivation)
+    //         : (differ.activation - personActivation);
     data1 = [
-      BarChartData('Релаксация', relax, 0, 0, 0, 0, 0),
+      BarChartData('Релаксация', _relax, 0, 0, 0, 0, 0),
       BarChartData('Релаксация', 0, personRelax, 0, 0, 0, 0),
-      BarChartData('Активация', 0, 0, activation, 0, 0, 0),
+      BarChartData('Активация', 0, 0, _activation, 0, 0, 0),
       BarChartData('Активация', 0, 0, 0, personActivation, 0, 0),
       BarChartData('Фон', 0, 0, 0, 0, mid, 0),
       BarChartData('Фон', 0, 0, 0, 0, 0, personMid),
@@ -99,7 +99,7 @@ class _ReviewPageState extends State<ReviewPage> {
         body: Container(
           alignment: Alignment.center,
           padding:
-              const EdgeInsets.only(left: 150, top: 50, right: 250, bottom: 80),
+              const EdgeInsets.only(left: 150, top: 40, right: 250, bottom: 60),
           child: Center(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +129,7 @@ class _ReviewPageState extends State<ReviewPage> {
                               maximum: 10,
                               interval: 1,
                               labelStyle:
-                                  const TextStyle(color: Colors.black12)),
+                                  const TextStyle(color: Colors.grey)),
                           tooltipBehavior: _tooltipBehavior,
                           legend: Legend(isVisible: true),
                           series: <ChartSeries>[
@@ -180,8 +180,7 @@ class _ReviewPageState extends State<ReviewPage> {
                     const Expanded(child: Text("ТЕКСТ ОБОБЩЕНИЯ РЕЗУЛЬТАТОВ"))
                   ],
                 ),
-                Expanded(
-                    child: Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
@@ -236,7 +235,7 @@ class _ReviewPageState extends State<ReviewPage> {
                           child: const Text('Выйти')),
                     ),
                   ],
-                ))
+                )
               ])),
         ));
   }
@@ -247,10 +246,10 @@ class BarChartData {
       this.personActivation, this.mid, this.personMid);
 
   final String name;
-  final double relax;
-  final double personRelax;
-  final double activation;
-  final double personActivation;
-  final double mid;
-  final double personMid;
+  final int relax;
+  final int personRelax;
+  final int activation;
+  final int personActivation;
+  final int mid;
+  final int personMid;
 }
