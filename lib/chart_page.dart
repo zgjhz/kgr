@@ -19,6 +19,8 @@ class MyHomePage extends StatefulWidget {
 
 late TransferData data;
 late var path;
+double maxLability = 0.0;
+double minLability = 0.0;
 
 class _MyHomePageState extends State<MyHomePage> {
   late List<LiveData> _chartData;
@@ -75,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     List<String> avaiblePorts = SerialPort.availablePorts;
     print("AvailablePorts: $avaiblePorts");
+    print(selectedComPort);
     SerialPort port1 = SerialPort(selectedComPort);
     final configu = SerialPortConfig();
     configu.baudRate = 9600;
@@ -113,36 +116,36 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
 
-    /*testData.stream.*/upcommingData.listen((data) {
-      if (data != -1 && data >= 0) {
-        sink.writeln("$timeCounter;$data");
-        sum += data;
-        counter++;
-        if (midFlag != false) {
-          mid.value = sum / counter;
+      /*upcommingData.*/ testData.stream.listen((data) {
+        if (data != -1 && data >= 0) {
+          sink.writeln("$timeCounter;$data");
+          sum += data;
+          counter++;
+          if (midFlag != false) {
+            mid.value = sum / counter;
+          }
+          if (relaxationFlag == true) {
+            relax.value = ((1 - data / mid.value) * 100).isNegative
+                ? 0
+                : (1 - data / mid.value) * 100;
+            secRelax = data;
+          }
+          if (activationFlag == true) {
+            activation.value = ((data / secRelax - 1) * 100).isNegative
+                ? 0
+                : (data / secRelax - 1) * 100;
+            secActivation = data;
+          }
+          secSum += data;
+          recCounter++;
+          secMid = secSum / recCounter;
+          secMidOldNew[index] = secMid == 0 ? 10000 : secMid;
+          if (index == 1) {
+            index = -1;
+          }
+          index++;
         }
-        if (relaxationFlag == true) {
-          relax.value = ((1 - data / mid.value) * 100).isNegative
-              ? 0
-              : (1 - data / mid.value) * 100;
-          secRelax = data;
-        }
-        if (activationFlag == true) {
-          activation.value = ((data / secRelax - 1) * 100).isNegative
-              ? 0
-              : (data / secRelax - 1) * 100;
-          secActivation = data;
-        }
-        secSum += data;
-        recCounter++;
-        secMid = secSum / recCounter;
-        secMidOldNew[index] = secMid == 0 ? 10000 : secMid;
-        if (index == 1) {
-          index = -1;
-        }
-        index++;
-      }
-    });
+      });
     } on SerialPortError catch (err, _) {
       print(err);
     }
@@ -504,34 +507,68 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: 400,
                     child: ElevatedButton(
                         onPressed: () {
-                          double value = 1;
-                          double fvc = 1;
+                          double value = 0;
+                          double fvc = 0;
                           double testValue = 5.0;
                           timer = Timer.periodic(
                               const Duration(milliseconds: 200), (timer) {
-                            timeCounter++;
-                            double doubleInRange(Random source, num start, num end) =>
-                                source.nextDouble() * (end - start) + start;
-                            testValue += doubleInRange(Random(), -1, 1);
-                            testData.sink.add(testValue);
-                            //print(random);
-                            _chartData.add(LiveData(timeCounter, 0, secMid, 0,
-                                0, 0, 0, 0, 0, 0, 0, 0, 0));
-                            _chartSeriesController.updateDataSource(
-                              addedDataIndex: _chartData.length - 1,
-                            );
-                            if (timeCounter <= 300) {
-                              fvc = (10000 / secMidOldNew[1]) +
-                                  (0.875 * fvc) -
-                                  (10000 / secMidOldNew[0] * 1);
+                            if (timeCounter <= 1550) {
+                              timeCounter++;
+                              double doubleInRange(
+                                      Random source, num start, num end) =>
+                                  source.nextDouble() * (end - start) + start;
+                              // if (timeCounter <= 300) {
+                              //   testValue = 3;
+                              // } else if (timeCounter > 300 &&
+                              //     timeCounter <= 1200) {
+                              //   testValue = 2;
+                              // } else if (timeCounter > 1200 &&
+                              //     timeCounter <= 1500) {
+                              //   testValue = 4;
+                              // }
+                              if (testValue >= 10) {
+                                testValue -= 1;
+                              }
+                              if (testValue <= 0.4) {
+                                testValue += 0.5;
+                              }
+                              testValue += doubleInRange(Random(), -0.3, 0.3);
+                              testData.sink.add(testValue);
+                              //print(random);
+                              _chartData.add(LiveData(timeCounter, 0, secMid, 0,
+                                  0, 0, 0, 0, 0, 0, 0, 0, 0));
+                              _chartSeriesController.updateDataSource(
+                                addedDataIndex: _chartData.length - 1,
+                              );
+                              //if (timeCounter <= 300) {
+                              if (!secMidOldNew[1].isNaN &&
+                                  secMidOldNew[1] != 0 &&
+                                  secMidOldNew[1].isFinite &&
+                                  !secMidOldNew[0].isNaN &&
+                                  secMidOldNew[0] != 0 &&
+                                  secMidOldNew[0].isFinite) {
+                                fvc = (10000 / secMidOldNew[1]) +
+                                    (0.875 * fvc) -
+                                    (10000 / secMidOldNew[0] * 1);
+                              } else {
+                                fvc = 0.01;
+                              }
+                              maxLability = value;
+                              minLability = value;
                               value = value * (1 - 0.15) + fvc * 0.1;
                               value = value.isNegative ? 0 : value;
-                              print(value);
+                              if (value >= maxLability) {
+                                maxLability = value;
+                              }
+                              if (value <= minLability) {
+                                minLability = value;
+                              }
                               _chartData1.add(LiveData(timeCounter, value, 0, 0,
                                   0, 0, 0, 0, 0, 0, 0, 0, 0));
                               _chartSeriesController1.updateDataSource(
                                 addedDataIndex: _chartData1.length - 1,
                               );
+                              //}
                             }
                             recCounter = 0;
                             secSum = 0;
@@ -546,21 +583,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                 addedDataIndex: _chartMidPoint.length - 1,
                               );
                             }
-                            if (timeCounter == 600) {
+                            if (timeCounter == 1200) {
                               relaxationFlag = false;
                               activationFlag = true;
                               _chartRelaxPoint.clear();
                               _chartRelaxPoint.add(LiveData(0, 0, 0, 0, 0, 0, 0,
-                                  600, 0, 0, 0, secRelax, 0));
+                                  1200, 0, 0, 0, secRelax, 0));
                               _chartRelaxPointController.updateDataSource(
                                 addedDataIndex: _chartRelaxPoint.length - 1,
                               );
                             }
-                            if (timeCounter == 900) {
+                            if (timeCounter == 1500) {
                               activationFlag = false;
                               _chartActivationPoint.clear();
                               _chartActivationPoint.add(LiveData(0, 0, 0, 0, 0,
-                                  0, 0, 0, 0, 900, 0, 0, secActivation));
+                                  0, 0, 0, 0, 1500, 0, 0, secActivation));
                               _chartActivationPointController.updateDataSource(
                                 addedDataIndex:
                                     _chartActivationPoint.length - 1,
@@ -575,7 +612,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     borderRadius: BorderRadius.zero)),
                             backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 195, 217, 230))),
-                        child: const Text('Cтарт')),
+                        child: const Text('СТАРТ',
+                            style: TextStyle(color: Color(0xff000000)))),
                   ),
                   ElevatedButton(
                     style: ButtonStyle(
@@ -599,7 +637,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.of(context).pushNamed('/statusPage',
                           arguments: ScreenArguments('САМООЦЕНКА РЕЛАКСАЦИИ'));
                     },
-                    child: const Text('Далее'),
+                    child: const Text('ДАЛЕЕ',
+                        style: TextStyle(color: Color(0xff000000))),
                   )
                 ],
               )

@@ -15,14 +15,24 @@ class ReviewPage extends StatefulWidget {
 class _ReviewPageState extends State<ReviewPage> {
   late List<BarChartData> data1;
   late TooltipBehavior _tooltipBehavior;
+  String relaxName = "Релаксация";
+  String personRelaxName = "С. релаксации";
+  String activationName = "Активация";
+  String personActivationName = "С. активации";
+  String midName = "Фон";
+  String personMidName = "С. фона";
+  String concentrationName = "Концентрация";
+  String personConcentrartionName = "С. Концентрации";
+
   @override
   void initState() {
+    int newConcentration = (concentration * 10).round();
+    int personConcentrartion =
+        PersonConcentrationPoint.personConcentrartionPoint.round();
     int personMid = PersonMidPoint.personMidPoint.round();
     int personActivation = PersonActivationPoint.personActivationPoint.round();
     int personRelax = PersonRelaxPoint.personRelaxPoint.round();
     int mid = newMid;
-    int _relax = relax;
-    int _activation = activation;
     // double relaxAccuracy = (differ.relax - personRelax).isNegative
     //     ? -(differ.relax - personRelax)
     //     : (differ.relax - personRelax);
@@ -30,13 +40,36 @@ class _ReviewPageState extends State<ReviewPage> {
     //     (differ.activation - personActivation).isNegative
     //         ? -(differ.activation - personActivation)
     //         : (differ.activation - personActivation);
+    // if (relax <= personRelax){
+    //   relaxName = "Польз. релаксация";
+    //   personRelaxName = "Апп. релаксация";
+    //   var temp = relax;
+    //   relax = personRelax;
+    //   personRelax = temp;
+    // }
+    // if (activation <= personActivation){
+    //   activationName = "Польз. активация";
+    //   personActivationName = "Апп. активация";
+    //   var temp = activation;
+    //   activation = personActivation;
+    //   personActivation = temp;
+    // }if (mid <= personMid){
+    //   midName = "Польз. фон";
+    //   personMidName = "Апп. фон";
+    //   var temp = mid;
+    //   mid = personMid;
+    //   personMid = temp;
+    // }
     data1 = [
-      BarChartData('Релаксация', _relax, 0, 0, 0, 0, 0),
-      BarChartData('Релаксация', 0, personRelax, 0, 0, 0, 0),
-      BarChartData('Активация', 0, 0, _activation, 0, 0, 0),
-      BarChartData('Активация', 0, 0, 0, personActivation, 0, 0),
-      BarChartData('Фон', 0, 0, 0, 0, mid, 0),
-      BarChartData('Фон', 0, 0, 0, 0, 0, personMid),
+      BarChartData('Релаксация', relax, 0, 0, 0, 0, 0, 0, 0),
+      BarChartData('C. Релаксации', 0, personRelax, 0, 0, 0, 0, 0, 0),
+      BarChartData('Активация', 0, 0, activation, 0, 0, 0, 0, 0),
+      BarChartData('С. Активации', 0, 0, 0, personActivation, 0, 0, 0, 0),
+      BarChartData('Фон', 0, 0, 0, 0, mid, 0, 0, 0),
+      BarChartData('С. Фона', 0, 0, 0, 0, 0, personMid, 0, 0),
+      BarChartData('Концентрация', 0, 0, 0, 0, 0, 0, newConcentration, 0),
+      BarChartData(
+          'С. Концентрации', 0, 0, 0, 0, 0, 0, 0, personConcentrartion),
     ];
     _tooltipBehavior = TooltipBehavior(enable: true);
     print(
@@ -103,6 +136,7 @@ class _ReviewPageState extends State<ReviewPage> {
           child: Center(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                 Container(
                   padding: const EdgeInsets.only(bottom: 20),
@@ -121,64 +155,78 @@ class _ReviewPageState extends State<ReviewPage> {
                   children: [
                     Expanded(
                       child: SfCartesianChart(
-                          primaryXAxis: CategoryAxis(
-                            isInversed: true,
-                          ),
+                          primaryXAxis: CategoryAxis(),
                           primaryYAxis: NumericAxis(
                               minimum: 0,
                               maximum: 10,
                               interval: 1,
-                              labelStyle:
-                                  const TextStyle(color: Colors.grey)),
+                              labelStyle: const TextStyle(color: Colors.grey)),
                           tooltipBehavior: _tooltipBehavior,
                           legend: Legend(isVisible: true),
                           series: <ChartSeries>[
-                            StackedBarSeries<BarChartData, String>(
-                                dataSource: data1,
-                                xValueMapper: (BarChartData data, _) =>
-                                    data.name,
-                                yValueMapper: (BarChartData data, _) =>
-                                    data.relax,
-                                name: "Апп. релакс"),
-                            StackedBarSeries<BarChartData, String>(
+                            StackedColumnSeries<BarChartData, String>(
+                              dataSource: data1,
+                              xValueMapper: (BarChartData data, _) => data.name,
+                              yValueMapper: (BarChartData data, _) =>
+                                  data.relax,
+                              name: relaxName,
+                            ),
+                            StackedColumnSeries<BarChartData, String>(
                                 dataSource: data1,
                                 xValueMapper: (BarChartData data, _) =>
                                     data.name,
                                 yValueMapper: (BarChartData data, _) =>
                                     data.personRelax,
-                                name: "Польз. релакс"),
-                            StackedBarSeries<BarChartData, String>(
+                                name: personRelaxName),
+                            StackedColumnSeries<BarChartData, String>(
                                 dataSource: data1,
                                 xValueMapper: (BarChartData data, _) =>
                                     data.name,
                                 yValueMapper: (BarChartData data, _) =>
                                     data.activation,
-                                name: "Апп. активация"),
-                            StackedBarSeries<BarChartData, String>(
+                                name: activationName),
+                            StackedColumnSeries<BarChartData, String>(
                                 dataSource: data1,
                                 xValueMapper: (BarChartData data, _) =>
                                     data.name,
                                 yValueMapper: (BarChartData data, _) =>
                                     data.personActivation,
-                                name: "Польз. активация"),
-                            StackedBarSeries<BarChartData, String>(
+                                name: personActivationName),
+                            StackedColumnSeries<BarChartData, String>(
                                 dataSource: data1,
                                 xValueMapper: (BarChartData data, _) =>
                                     data.name,
                                 yValueMapper: (BarChartData data, _) =>
                                     data.mid,
-                                name: "Апп. фон"),
-                            StackedBarSeries<BarChartData, String>(
+                                name: midName),
+                            StackedColumnSeries<BarChartData, String>(
                                 dataSource: data1,
                                 xValueMapper: (BarChartData data, _) =>
                                     data.name,
                                 yValueMapper: (BarChartData data, _) =>
                                     data.personMid,
-                                name: "Польз. фон"),
+                                name: personMidName),
+                            StackedColumnSeries<BarChartData, String>(
+                                dataSource: data1,
+                                xValueMapper: (BarChartData data, _) =>
+                                    data.name,
+                                yValueMapper: (BarChartData data, _) =>
+                                    data.concentration,
+                                name: concentrationName),
+                            StackedColumnSeries<BarChartData, String>(
+                                dataSource: data1,
+                                xValueMapper: (BarChartData data, _) =>
+                                    data.name,
+                                yValueMapper: (BarChartData data, _) =>
+                                    data.personConcentrartion,
+                                name: personConcentrartionName),
                           ]),
                     ),
                     const Expanded(child: Text("ТЕКСТ ОБОБЩЕНИЯ РЕЗУЛЬТАТОВ"))
                   ],
+                ),
+                const SizedBox(
+                  height: 100,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -199,7 +247,10 @@ class _ReviewPageState extends State<ReviewPage> {
                                 arguments: ScreenArguments(
                                     'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ'));
                           },
-                          child: const Text('Вперед')),
+                          child: const Text(
+                            'НАЗАД',
+                            style: TextStyle(color: Color(0xff000000)),
+                          )),
                     ),
                     SizedBox(
                       height: 40,
@@ -210,11 +261,11 @@ class _ReviewPageState extends State<ReviewPage> {
                                   const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.zero)),
                               backgroundColor: MaterialStateProperty.all(
-                                  const Color.fromARGB(255, 213, 203, 37))),
+                                  const Color(0xfffec700))),
                           onPressed: () {
                             isSaving = true;
                           },
-                          child: const Text('Сохранить')),
+                          child: const Text('СОХРАНИТЬ', style: TextStyle(color: Color(0xff000000)),),),
                     ),
                     SizedBox(
                       height: 40,
@@ -232,7 +283,10 @@ class _ReviewPageState extends State<ReviewPage> {
                             }
                             exit(0);
                           },
-                          child: const Text('Выйти')),
+                          child: const Text(
+                            'ВЫЙТИ',
+                            style: TextStyle(color: Color(0xff000000)),
+                          )),
                     ),
                   ],
                 )
@@ -242,8 +296,16 @@ class _ReviewPageState extends State<ReviewPage> {
 }
 
 class BarChartData {
-  BarChartData(this.name, this.relax, this.personRelax, this.activation,
-      this.personActivation, this.mid, this.personMid);
+  BarChartData(
+      this.name,
+      this.relax,
+      this.personRelax,
+      this.activation,
+      this.personActivation,
+      this.mid,
+      this.personMid,
+      this.concentration,
+      this.personConcentrartion);
 
   final String name;
   final int relax;
@@ -252,4 +314,6 @@ class BarChartData {
   final int personActivation;
   final int mid;
   final int personMid;
+  final int concentration;
+  final int personConcentrartion;
 }

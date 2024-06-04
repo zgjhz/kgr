@@ -19,14 +19,19 @@ String selectedComPort = "";
 class _ManualPageState extends State<ManualPage> {
   @override
   void initState() {
-    availablePorts = SerialPort.availablePorts.isEmpty ? ["COM1"] : SerialPort.availablePorts;
+    availablePorts = SerialPort.availablePorts.isEmpty
+        ? ["COM1"]
+        : SerialPort.availablePorts;
+    selectedComPort = availablePorts[0];
     print(availablePorts);
     // TODO: implement initState
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     String selectedComPort = availablePorts.first;
+    double spanSpace = 20;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 238, 247, 254),
       appBar: AppBar(
@@ -95,16 +100,83 @@ class _ManualPageState extends State<ManualPage> {
             const SizedBox(
               height: 20,
             ),
-            //Expanded(
-            /*child:*/ SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              dragStartBehavior: DragStartBehavior.start,
-              child: Text(
-                getManual(),
-                style: const TextStyle(height: 2.5, fontSize: 12),
-              ),
+            Expanded(
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  dragStartBehavior: DragStartBehavior.start,
+                  child: RichText(
+                      text: TextSpan(
+                          style: const TextStyle(color: Color(0xffa2a6a9)),
+                          children: [
+                        const TextSpan(
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            text: "Шаг 1. "),
+                        TextSpan(
+                            style:
+                                const TextStyle(fontWeight: FontWeight.normal),
+                            text: getStep1()),
+                        WidgetSpan(
+                          child: SizedBox(width: spanSpace),
+                        ),
+                        const TextSpan(
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            text: "\nШаг 2. "),
+                        TextSpan(
+                            style:
+                                const TextStyle(fontWeight: FontWeight.normal),
+                            text: getStep2()),
+                        WidgetSpan(
+                          child: SizedBox(width: spanSpace),
+                        ),
+                        const TextSpan(
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            text: "\nШаг 3. "),
+                        TextSpan(
+                            style:
+                                const TextStyle(fontWeight: FontWeight.normal),
+                            text: getStep3()),
+                        WidgetSpan(
+                          child: SizedBox(width: spanSpace),
+                        ),
+                        const TextSpan(
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            text: "\nШаг 4. "),
+                        TextSpan(
+                            style:
+                                const TextStyle(fontWeight: FontWeight.normal),
+                            text: getStep4()),
+                        WidgetSpan(
+                          child: SizedBox(width: spanSpace),
+                        ),
+                        const TextSpan(
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            text: "\nШаг 5. "),
+                        TextSpan(
+                            style:
+                                const TextStyle(fontWeight: FontWeight.normal),
+                            text: getStep5()),
+                        WidgetSpan(
+                          child: SizedBox(width: spanSpace),
+                        ),
+                        const TextSpan(
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            text: "\nШаг 6. "),
+                        TextSpan(
+                            style:
+                                const TextStyle(fontWeight: FontWeight.normal),
+                            text: getStep6()),
+                        WidgetSpan(
+                          child: SizedBox(width: spanSpace),
+                        ),
+                        const TextSpan(
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            text: "\nШаг 7. "),
+                        TextSpan(
+                            style:
+                                const TextStyle(fontWeight: FontWeight.normal),
+                            text: getStep7()),
+                      ]))),
             ),
-            //),
             const SizedBox(
               height: 20,
             ),
@@ -129,13 +201,12 @@ class _ManualPageState extends State<ManualPage> {
                         onPressed: () {
                           exit(0);
                         },
-                        child: const Text('Выйти')),
+                        child: const Text('ВЫЙТИ',
+                            style: TextStyle(color: Color(0xff000000)))),
                   ),
-                  SizedBox(
-                    height: 40,
-                    width: 120,
-                    child: DropdownMenuExample()
-                  ),
+                  const Text("Выбор устройства: "),
+                  const SizedBox(
+                      height: 40, width: 300, child: DropdownMenuExample()),
                   SizedBox(
                     height: 40,
                     width: 120,
@@ -152,7 +223,10 @@ class _ManualPageState extends State<ManualPage> {
                               arguments: ScreenArguments(
                                   'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ'));
                         },
-                        child: const Text('Вперед')),
+                        child: const Text(
+                          'ВПЕРЁД',
+                          style: TextStyle(color: Color(0xff000000)),
+                        )),
                   )
                 ],
               ),
@@ -163,6 +237,7 @@ class _ManualPageState extends State<ManualPage> {
     );
   }
 }
+
 class DropdownMenuExample extends StatefulWidget {
   const DropdownMenuExample({super.key});
 
@@ -184,7 +259,8 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
           dropdownValue = value!;
         });
       },
-      dropdownMenuEntries: availablePorts.map<DropdownMenuEntry<String>>((String value) {
+      dropdownMenuEntries:
+          availablePorts.map<DropdownMenuEntry<String>>((String value) {
         return DropdownMenuEntry<String>(value: value, label: value);
       }).toList(),
     );

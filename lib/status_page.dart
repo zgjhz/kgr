@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:kgr_1/final_chart_page.dart';
-
-import 'chart_page.dart';
 
 class StatusPage extends StatefulWidget {
   const StatusPage({Key? key}) : super(key: key);
@@ -13,7 +9,6 @@ class StatusPage extends StatefulWidget {
 }
 
 class _StatusPageState extends State<StatusPage> {
-  @override
   List<bool> pressAttention = [
     false,
     false,
@@ -27,6 +22,7 @@ class _StatusPageState extends State<StatusPage> {
     false,
     false,
   ];
+  @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
     double buttonWidth = MediaQuery.of(context).size.width / 16;
@@ -151,9 +147,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 0;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 0;
+                              PersonRelaxPoint.personRelaxPoint = 10;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 0;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 0;
                             }
                             setState(() {
                               pressAttention[0] = !pressAttention[0];
@@ -198,9 +198,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 1;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 1;
+                              PersonRelaxPoint.personRelaxPoint = 9;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 1;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 1;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -246,9 +250,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 2;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 2;
+                              PersonRelaxPoint.personRelaxPoint = 8;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 2;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 2;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -294,9 +302,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 3;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 3;
+                              PersonRelaxPoint.personRelaxPoint = 7;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 3;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 3;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -342,9 +354,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 4;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 4;
+                              PersonRelaxPoint.personRelaxPoint = 6;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 4;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 4;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -393,6 +409,10 @@ class _StatusPageState extends State<StatusPage> {
                               PersonRelaxPoint.personRelaxPoint = 5;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 5;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 5;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -438,9 +458,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 6;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 6;
+                              PersonRelaxPoint.personRelaxPoint = 4;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 6;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 6;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -486,9 +510,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 7;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 7;
+                              PersonRelaxPoint.personRelaxPoint = 3;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 7;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 7;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -534,9 +562,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 8;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 8;
+                              PersonRelaxPoint.personRelaxPoint = 2;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 8;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 8;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -582,9 +614,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 9;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 9;
+                              PersonRelaxPoint.personRelaxPoint = 1;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 9;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 9;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -629,9 +665,13 @@ class _StatusPageState extends State<StatusPage> {
                                 'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
                               PersonMidPoint.personMidPoint = 10;
                             } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
-                              PersonRelaxPoint.personRelaxPoint = 10;
+                              PersonRelaxPoint.personRelaxPoint = 0;
                             } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
                               PersonActivationPoint.personActivationPoint = 10;
+                            } else if (args.title ==
+                                'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                              PersonConcentrationPoint
+                                  .personConcentrartionPoint = 10;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -709,6 +749,11 @@ class _StatusPageState extends State<StatusPage> {
                                 arguments:
                                     ScreenArguments('САМООЦЕНКА АКТИВАЦИИ'));
                           } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
+                            Navigator.of(context).pushReplacementNamed(
+                                '/statusPage',
+                                arguments:
+                                    ScreenArguments('САМООЦЕНКА КОНЦЕНТРАЦИИ'));
+                          } else if (args.title == 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                             Navigator.of(context).pushNamed('/finalChartPage');
                           }
                         },

@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:kgr_1/status_page.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'chart_page.dart';
 
@@ -21,6 +24,7 @@ class FinalChartPage extends StatefulWidget {
 var relax = 0;
 var activation = 0;
 var newMid = 0;
+double concentration = 1.0;
 
 class _FinalChartPageState extends State<FinalChartPage> {
   List<LiveData> personMidPoint = [];
@@ -30,11 +34,8 @@ class _FinalChartPageState extends State<FinalChartPage> {
   double personMid = PersonMidPoint.personMidPoint;
   double personRelax = PersonRelaxPoint.personRelaxPoint;
   double personActivation = PersonActivationPoint.personActivationPoint;
-
   double mid = data.mid;
   late GlobalKey<SfCartesianChartState> _cartesianChartKey;
-  double concentration = 1.0;
-
   double calculateMeanDerivative(List<LiveData> data) {
     double meanDerivative = 0.0;
     for (int i = 1; i < data.length - 1; i++) {
@@ -61,104 +62,6 @@ class _FinalChartPageState extends State<FinalChartPage> {
                 100)
             .round();
     print(calculateMeanDerivative(data.chartData));
-    concentration -= calculateMeanDerivative(data.chartData) * 1.1;
-    _cartesianChartKey = GlobalKey();
-    super.initState();
-  }
-
-  Future<void> _exportChartAsImage() async {
-    final ui.Image data =
-        await _cartesianChartKey.currentState!.toImage(pixelRatio: 3.0);
-    final ByteData? bytes =
-        await data.toByteData(format: ui.ImageByteFormat.png);
-    final Uint8List imageBytes =
-        bytes!.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
-    final directory = await getDownloadsDirectory();
-    path = directory?.path;
-    final file = File('$path/my-chart.png');
-    file.writeAsBytes(imageBytes);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (personMid == 1) {
-      personMid = 0.84;
-    } else if (personMid == 2) {
-      personMid = 1.68;
-    } else if (personMid == 3) {
-      personMid = 2.50;
-    } else if (personMid == 4) {
-      personMid = 2.60;
-    } else if (personMid == 5) {
-      personMid = 3.2;
-    } else if (personMid == 6) {
-      personMid = 3.8;
-    } else if (personMid == 7) {
-      personMid = 4.90;
-    } else if (personMid == 8) {
-      personMid = 5;
-    } else if (personMid == 9) {
-      personMid = 5.3;
-    } else if (personMid == 10) {
-      personMid = 5.5;
-    }
-
-    if (personRelax == 0) {
-      personRelax == 0;
-    }
-    if (personRelax == 1) {
-      personRelax = (1 - 0.06) * mid;
-    } else if (personRelax == 2) {
-      personRelax = (1 - 0.12) * mid;
-    } else if (personRelax == 3) {
-      personRelax = (1 - 0.19) * mid;
-    } else if (personRelax == 4) {
-      personRelax = (1 - 0.2625) * mid;
-    } else if (personRelax == 5) {
-      personRelax = (1 - 0.335) * mid;
-    } else if (personRelax == 6) {
-      personRelax = (1 - 0.4075) * mid;
-    } else if (personRelax == 7) {
-      personRelax = (1 - 0.49) * mid;
-    } else if (personRelax == 8) {
-      personRelax = (1 - 0.5) * mid;
-    } else if (personRelax == 9) {
-      personRelax = (1 - 0.57) * mid;
-    } else if (personRelax == 10) {
-      personRelax = (1 - 0.64) * mid;
-    }
-    double _relax = data.chartRelaxPoint[0].relax;
-    if (personActivation == 1) {
-      personActivation = 1.06 * _relax;
-    } else if (personActivation == 2) {
-      personActivation = 1.12 * _relax;
-    } else if (personActivation == 3) {
-      personActivation = 1.20 * _relax;
-    } else if (personActivation == 4) {
-      personActivation = 1.24 * _relax;
-    } else if (personActivation == 5) {
-      personActivation = 1.28 * _relax;
-    } else if (personActivation == 6) {
-      personActivation = 1.32 * _relax;
-    } else if (personActivation == 7) {
-      personActivation = 1.36 * _relax;
-    } else if (personActivation == 8) {
-      personActivation = 1.37 * _relax;
-    } else if (personActivation == 9) {
-      personActivation = 1.42 * _relax;
-    } else if (personActivation == 10) {
-      personActivation = 1.50 * _relax;
-    }
-    personRelaxPoint = [
-      LiveData(0, 0, 0, 0, 0, 0, 0, 600, personRelax, 0, 0, 0, 0)
-    ];
-    personActivationPoint = [
-      LiveData(0, 0, 0, 0, 0, 0, 0, 0, 0, 900, personActivation, 0, 0)
-    ];
-    List<LiveData> personMidPoint = [
-      LiveData(0, 0, 0, 0, 0, 300, personMid, 0, 0, 0, 0, 0, 0)
-    ];
-
     if (relax == 0) {
       relax = 0;
     } else if (relax >= 1 && relax <= 10) {
@@ -222,6 +125,168 @@ class _FinalChartPageState extends State<FinalChartPage> {
     } else if (mid > 6.1) {
       newMid = 10;
     }
+    if (personMid == 1) {
+      personMid = 0.84;
+    } else if (personMid == 2) {
+      personMid = 1.68;
+    } else if (personMid == 3) {
+      personMid = 2.50;
+    } else if (personMid == 4) {
+      personMid = 2.60;
+    } else if (personMid == 5) {
+      personMid = 3.2;
+    } else if (personMid == 6) {
+      personMid = 3.8;
+    } else if (personMid == 7) {
+      personMid = 4.90;
+    } else if (personMid == 8) {
+      personMid = 5;
+    } else if (personMid == 9) {
+      personMid = 5.3;
+    } else if (personMid == 10) {
+      personMid = 5.5;
+    }
+
+    if (personRelax == 0) {
+      personRelax == mid;
+    }
+    if (personRelax == 1) {
+      personRelax = (1 - 0.06) * mid;
+    } else if (personRelax == 2) {
+      personRelax = (1 - 0.12) * mid;
+    } else if (personRelax == 3) {
+      personRelax = (1 - 0.19) * mid;
+    } else if (personRelax == 4) {
+      personRelax = (1 - 0.2625) * mid;
+    } else if (personRelax == 5) {
+      personRelax = (1 - 0.335) * mid;
+    } else if (personRelax == 6) {
+      personRelax = (1 - 0.4075) * mid;
+    } else if (personRelax == 7) {
+      personRelax = (1 - 0.49) * mid;
+    } else if (personRelax == 8) {
+      personRelax = (1 - 0.5) * mid;
+    } else if (personRelax == 9) {
+      personRelax = (1 - 0.57) * mid;
+    } else if (personRelax == 10) {
+      personRelax = (1 - 0.64) * mid;
+    }
+    double _relax = data.chartRelaxPoint[0].relax;
+    if (personActivation == 1) {
+      personActivation = 1.06 * _relax;
+    } else if (personActivation == 2) {
+      personActivation = 1.12 * _relax;
+    } else if (personActivation == 3) {
+      personActivation = 1.20 * _relax;
+    } else if (personActivation == 4) {
+      personActivation = 1.24 * _relax;
+    } else if (personActivation == 5) {
+      personActivation = 1.28 * _relax;
+    } else if (personActivation == 6) {
+      personActivation = 1.32 * _relax;
+    } else if (personActivation == 7) {
+      personActivation = 1.36 * _relax;
+    } else if (personActivation == 8) {
+      personActivation = 1.37 * _relax;
+    } else if (personActivation == 9) {
+      personActivation = 1.42 * _relax;
+    } else if (personActivation == 10) {
+      personActivation = 1.50 * _relax;
+    }
+    concentration -= calculateMeanDerivative(data.chartData) * 1.1;
+    _cartesianChartKey = GlobalKey();
+    super.initState();
+  }
+
+  Future<List<int>> _readData(String name) async {
+    final ByteData data = await rootBundle.load('assets/fonts/$name');
+    return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+  }
+
+  Future<void> _renderPDF() async {
+    final List<int> imageBytes = await _readImageData();
+    final PdfBitmap bitmap = PdfBitmap(imageBytes);
+    final PdfDocument document = PdfDocument();
+    document.pageSettings.size =
+        Size(bitmap.width.toDouble(), bitmap.height.toDouble());
+    final PdfPage page = document.pages.add();
+    final Size pageSize = page.getClientSize();
+    String relaxName = "Релаксация:  $relax";
+    String personRelaxName =
+        "Самооценка релаксации:  ${PersonRelaxPoint.personRelaxPoint}";
+    String relaxAccuracyName =
+        "Точность оценки релаксации:  ${(10 - (relax - PersonRelaxPoint.personRelaxPoint).abs().toInt()) * 10}%";
+    String activationName = "Активация:  $activation";
+    String personActivationName =
+        "Самооценка активации:  ${PersonActivationPoint.personActivationPoint}";
+    String activationAccuracyName =
+        "Точность оценки релаксации:  ${(10 - (activation - PersonActivationPoint.personActivationPoint).abs().toInt()) * 10}%";
+    String midName = "Фон:  $newMid";
+    String personMidName = "Самооценка фона:  ${PersonMidPoint.personMidPoint}";
+    String concentrationName = "Концентрация:  $concentration";
+    String personConcentrartionName =
+        "Самооценка концентрации:  ${PersonConcentrationPoint.personConcentrartionPoint}";
+    PdfFont font = PdfTrueTypeFont(await _readData('ArialRegular.ttf'), 14);
+    page.graphics.drawImage(
+        bitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height / 6));
+    page.graphics.drawString(relaxName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 10, 300, 50));
+    page.graphics.drawString(personRelaxName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 20, 300, 50));
+    page.graphics.drawString(activationName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 30, 300, 50));
+    page.graphics.drawString(personActivationName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 40, 300, 50));
+    page.graphics.drawString(midName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 50, 300, 50));
+    page.graphics.drawString(personMidName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 60, 300, 50));
+    page.graphics.drawString(concentrationName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 70, 300, 50));
+    page.graphics.drawString(personConcentrartionName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 80, 300, 50));
+    page.graphics.drawString(relaxAccuracyName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 90, 300, 50));
+    page.graphics.drawString(activationAccuracyName, font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(10, pageSize.height / 6 + 100, 300, 50));
+    final List<int> bytes = document.saveSync();
+    document.dispose();
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String path = directory.path;
+    print("PATH: $path");
+    File file = File('$path/Output.pdf');
+    await file.writeAsBytes(bytes, flush: true);
+  }
+
+  Future<List<int>> _readImageData() async {
+    final ui.Image data =
+        await _cartesianChartKey.currentState!.toImage(pixelRatio: 1.0);
+    final ByteData? bytes =
+        await data.toByteData(format: ui.ImageByteFormat.png);
+    return bytes!.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    personRelaxPoint = [
+      LiveData(0, 0, 0, 0, 0, 0, 0, 1200, personRelax, 0, 0, 0, 0)
+    ];
+    personActivationPoint = [
+      LiveData(0, 0, 0, 0, 0, 0, 0, 0, 0, 1500, personActivation, 0, 0)
+    ];
+    List<LiveData> personMidPoint = [
+      LiveData(0, 0, 0, 0, 0, 300, personMid, 0, 0, 0, 0, 0, 0)
+    ];
 
     differ = Differ(relax, activation, newMid);
     return Scaffold(
@@ -473,6 +538,54 @@ class _FinalChartPageState extends State<FinalChartPage> {
                               )
                             ],
                           ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          const Row(
+                            children: [
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Text(
+                                  'ЛАБИЛЬНОСТЬ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 45,
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                height: 40,
+                                width: 90,
+                                child: Container(
+                                  color:
+                                      const Color.fromARGB(255, 104, 163, 193),
+                                  child: Center(
+                                      child: Text(
+                                    '${((maxLability / minLability) * 100).round()}',
+                                    style: const TextStyle(color: Colors.white),
+                                  )),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const Text('%',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 104, 163, 193),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14)),
+                              const SizedBox(
+                                width: 0,
+                              )
+                            ],
+                          ),
                         ],
                       ),
                       Expanded(
@@ -494,15 +607,15 @@ class _FinalChartPageState extends State<FinalChartPage> {
                                   yValueMapper: (LiveData sales, _) =>
                                       sales.mkSim,
                                 ),
-                                StackedLineSeries<LiveData, int>(
-                                  width: 2,
-                                  dataSource: data.chartData1,
-                                  color: const Color.fromRGBO(192, 108, 132, 1),
-                                  xValueMapper: (LiveData sales, _) =>
-                                      sales.time,
-                                  yValueMapper: (LiveData sales, _) =>
-                                      sales.mkSimOld,
-                                ),
+                                // StackedLineSeries<LiveData, int>(
+                                //   width: 2,
+                                //   dataSource: data.chartData1,
+                                //   color: const Color.fromRGBO(192, 108, 132, 1),
+                                //   xValueMapper: (LiveData sales, _) =>
+                                //       sales.time,
+                                //   yValueMapper: (LiveData sales, _) =>
+                                //       sales.mkSimOld,
+                                // ),
                                 ScatterSeries(
                                     dataSource: data.chartMidPoint,
                                     color: const Color.fromARGB(
@@ -630,7 +743,7 @@ class _FinalChartPageState extends State<FinalChartPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      _exportChartAsImage();
+                      _renderPDF();
                       Navigator.of(context).pushNamed('/reviewPage');
                     },
                     style: ButtonStyle(
@@ -662,6 +775,10 @@ class PersonRelaxPoint {
 
 class PersonActivationPoint {
   static double personActivationPoint = 0;
+}
+
+class PersonConcentrationPoint {
+  static double personConcentrartionPoint = 0;
 }
 
 class Differ {
