@@ -4,6 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   flutter_libserialport
+  screen_retriever
+  window_manager
   window_size
 )
 

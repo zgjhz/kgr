@@ -33,7 +33,7 @@ class _StatusPageState extends State<StatusPage> {
       appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 246, 246, 246),
           shape: const Border(bottom: BorderSide(color: Colors.grey, width: 2)),
-          toolbarHeight: 150,
+          toolbarHeight: 90,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +79,7 @@ class _StatusPageState extends State<StatusPage> {
       body: Container(
         alignment: Alignment.center,
         padding:
-            const EdgeInsets.only(left: 150, top: 50, right: 150, bottom: 80),
+        const EdgeInsets.only(left: 50, top: 30, right: 200, bottom: 80),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -153,7 +153,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 0;
+                                  .personConcentrationPoint = 0;
                             }
                             setState(() {
                               pressAttention[0] = !pressAttention[0];
@@ -204,7 +204,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 1;
+                                  .personConcentrationPoint = 1;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -256,7 +256,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 2;
+                                  .personConcentrationPoint = 2;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -308,7 +308,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 3;
+                                  .personConcentrationPoint = 3;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -360,7 +360,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 4;
+                                  .personConcentrationPoint = 4;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -412,7 +412,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 5;
+                                  .personConcentrationPoint = 5;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -464,7 +464,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 6;
+                                  .personConcentrationPoint = 6;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -516,7 +516,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 7;
+                                  .personConcentrationPoint = 7;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -568,7 +568,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 8;
+                                  .personConcentrationPoint = 8;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -620,7 +620,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 9;
+                                  .personConcentrationPoint = 9;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -671,7 +671,7 @@ class _StatusPageState extends State<StatusPage> {
                             } else if (args.title ==
                                 'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
                               PersonConcentrationPoint
-                                  .personConcentrartionPoint = 10;
+                                  .personConcentrationPoint = 10;
                             }
                             setState(() {
                               pressAttention[0] = false;
@@ -725,9 +725,25 @@ class _StatusPageState extends State<StatusPage> {
                             backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 195, 217, 230))),
                         onPressed: () {
-                          Navigator.of(context).pushNamed('/');
+                          if (args.title ==
+                              'САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ') {
+                            Navigator.of(context).pushNamed('/');
+                          } else if (args.title == 'САМООЦЕНКА РЕЛАКСАЦИИ') {
+                            //Navigator.of(context).pushNamed('/chartPage');
+                          } else if (args.title == 'САМООЦЕНКА АКТИВАЦИИ') {
+                            Navigator.of(context).pushReplacementNamed(
+                                '/statusPage',
+                                arguments:
+                                ScreenArguments('САМООЦЕНКА РЕЛАКСАЦИИ'));
+                          } else if (args.title ==
+                              'САМООЦЕНКА КОНЦЕНТРАЦИИ') {
+                            Navigator.of(context).pushReplacementNamed(
+                                '/statusPage',
+                                arguments:
+                                ScreenArguments('САМООЦЕНКА АКТИВАЦИИ'));
+                          }
                         },
-                        child: const Text('Назад')),
+                        child: const Text('Назад', style: TextStyle(color: Color(0xff000000)))),
                   ),
                   SizedBox(
                     height: 40,
@@ -757,7 +773,7 @@ class _StatusPageState extends State<StatusPage> {
                             Navigator.of(context).pushNamed('/finalChartPage');
                           }
                         },
-                        child: const Text('Вперёд')),
+                        child: const Text('Вперёд', style: TextStyle(color: Color(0xff000000)))),
                   )
                   // ElevatedButton(
                   //     onPressed: () {

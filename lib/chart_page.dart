@@ -34,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late ChartSeriesController _chartRelaxPointController;
   late ChartSeriesController _chartActivationPointController;
   int counter = 0;
+  bool isStarted = false;
 
   bool midFlag = false;
   bool relaxationFlag = false;
@@ -55,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late IOSink sink;
 
   void _localFile() async {
-    final directory = await getDownloadsDirectory();
+    final directory = await getApplicationDocumentsDirectory();
     path = directory?.path;
     var chartFile = File('$path/my-list.csv');
     sink = chartFile.openWrite();
@@ -64,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    isStarted = false;
     _chartData = <LiveData>[];
     _chartData1 = <LiveData>[];
     _chartMidPoint = <LiveData>[];
@@ -116,9 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
 
-      /*upcommingData.*/ testData.stream.listen((data) {
+      /*upcommingData.*/testData.stream.listen((data) {
         if (data != -1 && data >= 0) {
-          sink.writeln("$timeCounter;$data");
+          sink.writeln("$data");
           sum += data;
           counter++;
           if (midFlag != false) {
@@ -155,14 +157,15 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: const Color.fromARGB(255, 246, 246, 246),
             shape:
                 const Border(bottom: BorderSide(color: Colors.grey, width: 2)),
-            toolbarHeight: 150,
+            toolbarHeight: 90,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(
                   'assets/images/variant_B_icon.png',
-                  scale: 0.9,
+                  width: 1,
+                  height: 1,
                 ),
                 const SizedBox(
                   width: 20,
@@ -484,12 +487,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   ElevatedButton(
                     onPressed: () {
                       //ToDo: Защита от дурака(late Timer timer), чтобы не нажимали далее, пока не нажмут старт
-                      //reader.close();
-                      //port1.close();
-                      timer.cancel();
+                      if (isStarted) {
+                        reader.close();
+                        port1.close();
+                        timer.cancel();
+                      }
                       Navigator.of(context).pushReplacementNamed('/statusPage',
                           arguments:
-                              ScreenArguments('Самооценка текущего состояния'));
+                              ScreenArguments('САМООЦЕНКА ТЕКУЩЕГО СОСТОЯНИЯ ТЕСТИРУЕМОГО ПЕРЕД ТЕСТИРОВАНИЕМ'));
                     },
                     style: ButtonStyle(
                         shape: MaterialStateProperty.all(
@@ -507,6 +512,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: 400,
                     child: ElevatedButton(
                         onPressed: () {
+                          isStarted = true;
                           double value = 0;
                           double fvc = 0;
                           double testValue = 5.0;
@@ -541,18 +547,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                 addedDataIndex: _chartData.length - 1,
                               );
                               //if (timeCounter <= 300) {
-                              if (!secMidOldNew[1].isNaN &&
-                                  secMidOldNew[1] != 0 &&
-                                  secMidOldNew[1].isFinite &&
-                                  !secMidOldNew[0].isNaN &&
-                                  secMidOldNew[0] != 0 &&
-                                  secMidOldNew[0].isFinite) {
+                              // if (!secMidOldNew[1].isNaN &&
+                              //     secMidOldNew[1] != 0 &&
+                              //     secMidOldNew[1].isFinite &&
+                              //     !secMidOldNew[0].isNaN &&
+                              //     secMidOldNew[0] != 0 &&
+                              //     secMidOldNew[0].isFinite) {
                                 fvc = (10000 / secMidOldNew[1]) +
-                                    (0.875 * fvc) -
+                                    (1 * fvc) -
                                     (10000 / secMidOldNew[0] * 1);
-                              } else {
-                                fvc = 0.01;
-                              }
+                              // } else {
+                              //   fvc = 0.01;
+                              // }
                               maxLability = value;
                               minLability = value;
                               value = value * (1 - 0.15) + fvc * 0.1;
@@ -572,7 +578,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             }
                             recCounter = 0;
                             secSum = 0;
-                            if (timeCounter == 300) {
+                            if (timeCounter == 50) { //300
                               print('ADD MID POINT');
                               midFlag = false;
                               relaxationFlag = true;
@@ -583,7 +589,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 addedDataIndex: _chartMidPoint.length - 1,
                               );
                             }
-                            if (timeCounter == 1200) {
+                            if (timeCounter == 100) { //1200
                               relaxationFlag = false;
                               activationFlag = true;
                               _chartRelaxPoint.clear();
@@ -593,7 +599,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 addedDataIndex: _chartRelaxPoint.length - 1,
                               );
                             }
-                            if (timeCounter == 1500) {
+                            if (timeCounter == 150) { //1500
                               activationFlag = false;
                               _chartActivationPoint.clear();
                               _chartActivationPoint.add(LiveData(0, 0, 0, 0, 0,
@@ -631,9 +637,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           _chartRelaxPoint,
                           _chartActivationPoint);
                       //ToDo: Защита от дурака(late Timer timer), чтобы не нажимали далее, пока не нажмут старт
-                      reader.close();
-                      port1.close();
-                      timer.cancel();
+                      if (isStarted) {
+                        reader.close();
+                        port1.close();
+                        timer.cancel();
+                      }
                       Navigator.of(context).pushNamed('/statusPage',
                           arguments: ScreenArguments('САМООЦЕНКА РЕЛАКСАЦИИ'));
                     },
@@ -714,7 +722,7 @@ class LiveData {
       this.activationTime,
       this.personActivation,
       this.relax,
-      this.activation);
+      this.activation,);
 
   final int time;
   final double mkSimOld;

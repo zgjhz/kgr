@@ -5,13 +5,28 @@ import 'final_chart_page.dart';
 import 'manual_page.dart';
 import 'status_page.dart';
 import 'review_page.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  // Инициализация window_manager
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
 
-  //setWindowTitle('My App');
-  //setWindowMaxSize(const Size(2400, 1500));
-  //setWindowMinSize(const Size(1820, 1080));
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(1920, 1080),
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.normal,
+    windowButtonVisibility: true,
+  );
+
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.setFullScreen(true);
+    await windowManager.show();
+    //await windowManager.focus();
+  });
   runApp(const MyApp());
 }
 

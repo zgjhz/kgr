@@ -15,6 +15,7 @@ class ManualPage extends StatefulWidget {
 
 List<String> availablePorts = ["COM1"];
 String selectedComPort = "";
+String fullName = "";
 
 class _ManualPageState extends State<ManualPage> {
   @override
@@ -37,7 +38,7 @@ class _ManualPageState extends State<ManualPage> {
       appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 246, 246, 246),
           shape: const Border(bottom: BorderSide(color: Colors.grey, width: 2)),
-          toolbarHeight: 150,
+          toolbarHeight: 90,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +84,7 @@ class _ManualPageState extends State<ManualPage> {
       body: Container(
         alignment: Alignment.center,
         padding:
-            const EdgeInsets.only(left: 150, top: 60, right: 250, bottom: 80),
+            const EdgeInsets.only(left: 50, top: 30, right: 200, bottom: 80),
         child: Center(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -98,8 +99,26 @@ class _ManualPageState extends State<ManualPage> {
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
+            Row(
+              children: [
+                const Text("Введите ФИО: ", style: TextStyle(color: Color(0xff2389b1), fontWeight: FontWeight.w500, fontSize: 16),),
+                const SizedBox(width: 10,),
+                Flexible(
+                  child: TextField(
+                    cursorColor: const Color(0xff2389b1),
+                    decoration: const InputDecoration(hintText: "ФИО", focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xff2389b1)), //<-- SEE HERE
+                    ),),
+                    onSubmitted: (text) {
+                      fullName = text;
+                    },
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 10,),
             Expanded(
               child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
